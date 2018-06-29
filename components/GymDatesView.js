@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Alert,
   Button,
   ScrollView,
   StyleSheet,
@@ -35,10 +36,17 @@ export default class GymDatesView extends Component {
     this.props.navigation.addListener('didFocus', () => {
       Api.dates()
         .then((r) => {
+          if (r instanceof Error) throw r;
           this.setState(r);
         })
-        .catch(alert);
+        .catch(this.error);
     });
+  }
+
+  error({message}) {
+    Alert.alert('Error', message, [
+      {text: 'Close'},
+    ])
   }
 
   onPressBookButton(d) {

@@ -1,10 +1,10 @@
 import { getAuthToken } from '../storage/StorageUtils';
 
-const authBaseUrl = 'https://e9a89b11-f310-4634-b224-df16b90f9bd3.mock.pstmn.io';
-const bookBaseUrl = 'https://e9a89b11-f310-4634-b224-df16b90f9bd3.mock.pstmn.io';
+const authBaseUrl = 'https://4e212407-3532-4a04-a471-e6f6091b5265.mock.pstmn.io';
+const bookBaseUrl = 'https://4e212407-3532-4a04-a471-e6f6091b5265.mock.pstmn.io';
 
 const headers = {
-  'x-api-key': '37e332c8c96b471b9d92e2697df670d7',
+  // 'x-api-key': '37e332c8c96b471b9d92e2697df670d7',
 };
 const paths = {
   auth: { token: '/auth/token' },
@@ -20,6 +20,10 @@ const authorizationHeader = () => {
       })
       .catch(rej);
   });
+}
+
+const error = (e) => {
+
 }
 
 const fns = {

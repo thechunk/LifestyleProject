@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Alert,
   Button,
   StyleSheet,
   Text,
@@ -31,6 +32,12 @@ export default class GymBookConfirmView extends Component {
     };
   }
 
+  error({message}) {
+    Alert.alert('Error', message, [
+      {text: 'Close'},
+    ])
+  }
+
   onConfirmPress() {
     const date = new Date(this.data.date).toISOString();
     let apiFn = Api.postBookings;
@@ -40,21 +47,23 @@ export default class GymBookConfirmView extends Component {
 
     apiFn(date, this.state.time, this.data.booking_id)
       .then((r) => {
+        if (r instanceof Error) throw r;
         this.props.navigation.push('GymBookSuccessView', {
           data: this.data,
           result: r.data,
           param: this.state,
         });
       })
-      .catch(alert);
+      .catch(this.error);
   }
 
   onDeletePress() {
     Api.deleteBookings(this.data.booking_id)
-      .then(() => {
+      .then((r) => {
+        if (r instanceof Error) throw r;
         this.props.navigation.popToTop();
       })
-      .catch(alert);
+      .catch(this.error);
   }
 
   onCancelPress() {

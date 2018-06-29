@@ -25,6 +25,7 @@ export default class LoginView extends Component {
     Api.auth.token(this.state.username, this.state.password)
       .then((resp) => {
         console.log(resp);
+        if (resp instanceof Error) throw resp;
         if (resp.data.token) {
           setAuthToken(resp.data.token);
           this.props.navigation.navigate('Activities');
