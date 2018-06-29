@@ -6,6 +6,7 @@ import GymDatesView from './GymDatesView';
 import GymBookConfirmView from './GymBookConfirmView';
 import GymBookSuccessView from './GymBookSuccessView';
 import SettingsView from './SettingsView';
+import ComingSoonView from './ComingSoonView';
 
 const drawerButton = ({ onPress }) => {
   return (
@@ -24,31 +25,37 @@ export default DrawerNavigator(
       GymDatesView: {
         screen: GymDatesView,
         navigationOptions: ({ navigation }) => ({
-            title: 'Gym Booking',
-            headerLeft: drawerButton({ onPress: () => navigation.toggleDrawer() }),
+          title: 'Gym Booking',
+          headerLeft: drawerButton({ onPress: () => navigation.toggleDrawer() }),
         }),
       },
       GymBookConfirmView: {
         screen: GymBookConfirmView,
         navigationOptions: ({ navigation }) => ({
-            title: 'Gym Booking',
+          title: 'Gym Booking',
         }),
       },
       GymBookSuccessView: {
         screen: GymBookSuccessView,
         navigationOptions: ({ navigation }) => ({
-            title: 'Gym Booking',
+          title: 'Gym Booking',
         }),
       },
     }, {
       initialRouteName: 'GymDatesView',
     })},
+    ComingSoonOne: {
+      screen: ComingSoonView
+    },
+    ComingSoonTwo: {
+      screen: ComingSoonView
+    },
     Settings: { screen: StackNavigator({
       SettingsView: {
         screen: SettingsView,
         navigationOptions: ({ navigation }) => ({
-            title: 'Settings',
-            headerLeft: drawerButton({ onPress: () => navigation.toggleDrawer() }),
+          title: 'Settings',
+          headerLeft: drawerButton({ onPress: () => navigation.toggleDrawer() }),
         }),
       },
     }, {

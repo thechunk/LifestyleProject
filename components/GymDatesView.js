@@ -8,16 +8,22 @@ import {
   View
 } from 'react-native';
 import Api from './Api';
+import CommonStyles from './CommonStyles';
+import { formatDate } from './FormatHelper';
 
 const BookButton = ({data, onPressBookButton}) => {
   let title = "Book";
+  let color = "green";
   if (data.booking_id !== null) {
     title = "Review";
+    color = null;
   } else if (data.quota_full === true) {
     title = "Waitlist";
+    color = "orange";
   }
   return (
     <Button
+      color={color}
       onPress={() => onPressBookButton(data)}
       title={title}
     />
@@ -59,7 +65,10 @@ export default class GymDatesView extends Component {
     return this.state.data.map((d, i) => (
       <View key={i} style={[styles.tableRowBase, styles.tableRow]}>
         <View style={styles.tableCell}>
-          <Text>{d.date}</Text>
+          <Text>{formatDate(d.date)}</Text>
+        </View>
+        <View style={styles.tableCell}>
+          <Text>{d.time}</Text>
         </View>
         <View style={styles.tableCell}>
           <BookButton
@@ -73,13 +82,16 @@ export default class GymDatesView extends Component {
 
   render() {
     return (
-      <ScrollView contentContainerStyle={styles.tableContainer}>
-        <View style={[styles.tableRowBase, styles.tableHeader]}>
+      <ScrollView contentContainerStyle={[CommonStyles.standardContainer, styles.tableContainer]}>
+        <View style={[styles.tableRowBase, styles.tableHeader, CommonStyles.bgDeepBlue]}>
           <View style={styles.tableCell}>
-            <Text>Date</Text>
+            <Text style={CommonStyles.colorWhite}>Date</Text>
           </View>
           <View style={styles.tableCell}>
-            <Text>Actions</Text>
+            <Text style={CommonStyles.colorWhite}>Time</Text>
+          </View>
+          <View style={styles.tableCell}>
+            <Text style={CommonStyles.colorWhite}>Actions</Text>
           </View>
         </View>
         {this.renderRow.bind(this)()}
@@ -89,12 +101,11 @@ export default class GymDatesView extends Component {
 }
 
 const styles = StyleSheet.create({
-  tableContainer: {
-    margin: 22,
-    flex: 1,
-  },
+  tableContainer: {},
   tableHeader: {
-    backgroundColor: 'grey',
+    height: 56,
+    alignItems: 'center',
+    alignContent: 'center',
   },
   tableRow: {
     backgroundColor: 'white',

@@ -8,13 +8,14 @@ import {
   View
 } from 'react-native';
 import Api from './Api';
+import { formatDate } from './FormatHelper';
 
-const DeleteButton = ({editMode, onDeletePress}) => {
-  if (editMode === true) {
+const ConditionalButton = ({hidden, onPress, title}) => {
+  if (hidden === false) {
     return (
       <Button
-        onPress={onDeletePress}
-        title="Delete"
+        onPress={onPress}
+        title={title}
       />
     );
   } else {
@@ -78,7 +79,7 @@ export default class GymBookConfirmView extends Component {
             Date:
           </Text>
           <Text>
-            {this.data.date}
+            {formatDate(this.data.date)}
           </Text>
         </View>
         <View>
@@ -88,23 +89,26 @@ export default class GymBookConfirmView extends Component {
           <Picker
             selectedValue={this.state.time}
             onValueChange={(v, i) => this.setState({time: v})}
+            enabled={!this.state.editMode}
           >
             <Picker.Item label="AM" value="am" />
             <Picker.Item label="PM" value="pm" />
           </Picker>
         </View>
         <View style={styles.buttonContainer}>
-          <Button
+          <ConditionalButton
+            hidden={this.state.editMode}
             onPress={this.onConfirmPress.bind(this)}
             title="Confirm"
           />
-          <DeleteButton
-            editMode={this.state.editMode}
-            onDeletePress={this.onDeletePress.bind(this)}
+          <ConditionalButton
+            hidden={!this.state.editMode}
+            onPress={this.onDeletePress.bind(this)}
+            title="Delete"
           />
           <Button
             onPress={this.onCancelPress.bind(this)}
-            title="Cancel"
+            title="Return"
           />
         </View>
       </View>

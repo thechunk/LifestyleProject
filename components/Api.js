@@ -16,7 +16,7 @@ const authorizationHeader = () => {
   return new Promise((res, rej) => {
     getAuthToken()
       .then((authToken) => {
-        res(`Bearer ${getAuthToken()}`);
+        res(`Bearer ${authToken}`);
       })
       .catch(rej);
   });

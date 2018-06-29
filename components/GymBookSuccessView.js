@@ -5,19 +5,20 @@ import {
   Text,
   View
 } from 'react-native';
+import { formatDate } from './FormatHelper';
 
 const SuccessText = ({data, result, param}) => {
   console.log(result);
   if (result.waitlist === true) {
     return (
       <Text>
-        You are on the gym waitlist for {data.date} ({param.time}).
+        You are on the gym waitlist for {formatDate(data.date)} ({param.time}).
       </Text>
     );
   } else {
     return (
       <Text>
-        Successfully booked on {data.date} ({param.time}).
+        Successfully booked on {formatDate(data.date)} ({param.time}).
       </Text>
     );
   }
