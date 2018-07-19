@@ -28,8 +28,9 @@ export default class GymBookConfirmView extends Component {
     super(props);
     this.data = props.navigation.getParam('data');
     this.state = {
-      editMode: this.data.booking_id !== null,
+      editMode: this.data.booking_id >= 1, //!== null,
       time: this.data.time ? this.data.time : 'am',
+      quota_full: this.data.quota_full ? this.data.quota_full : false
     };
   }
 
@@ -42,26 +43,39 @@ export default class GymBookConfirmView extends Component {
   onConfirmPress() {
     const date = new Date(this.data.date).toISOString();
     let apiFn = Api.postBookings;
-    if (this.data.booking_id !== null) {
+    if (this.data.booking_id >= 1) { //!== null) {
       apiFn = Api.patchBookings;
+
+      apiFn(this.data.date, this.state.time, this.data.booking_id)
+        .then((r) => {
+          //if (r instanceof Error) throw r;
+          this.props.navigation.push('GymBookSuccessView', {
+            data: this.data,
+            result: this.state,
+            param: this.state,
+          });
+        })
+        .catch(this.error);
+    } else {
+      apiFn(this.data.date, this.state.time, this.data.quota_full)
+        .then((r) => {
+          //if (r instanceof Error) throw r;
+          this.props.navigation.push('GymBookSuccessView', {
+            data: this.data,
+            result: this.state,
+            param: this.state,
+          });
+        })
+        .catch(this.error);
     }
 
-    apiFn(date, this.state.time, this.data.booking_id)
-      .then((r) => {
-        if (r instanceof Error) throw r;
-        this.props.navigation.push('GymBookSuccessView', {
-          data: this.data,
-          result: r.data,
-          param: this.state,
-        });
-      })
-      .catch(this.error);
+    // apiFn(date, this.state.time, this.data.booking_id)
   }
 
   onDeletePress() {
     Api.deleteBookings(this.data.booking_id)
       .then((r) => {
-        if (r instanceof Error) throw r;
+        //if (r instanceof Error) throw r;
         this.props.navigation.popToTop();
       })
       .catch(this.error);

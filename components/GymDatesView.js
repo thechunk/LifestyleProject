@@ -14,7 +14,7 @@ import { formatDate } from './FormatHelper';
 const BookButton = ({data, onPressBookButton}) => {
   let title = "Book";
   let color = "green";
-  if (data.booking_id !== null) {
+  if (data.booking_id >= 1) {//!== null) {
     title = "Review";
     color = null;
   } else if (data.quota_full === true) {

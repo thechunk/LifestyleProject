@@ -9,7 +9,7 @@ import { formatDate } from './FormatHelper';
 
 const SuccessText = ({data, result, param}) => {
   console.log(result);
-  if (result.waitlist === true) {
+  if (result.quota_full === true) {
     return (
       <Text>
         You are on the gym waitlist for {formatDate(data.date)} ({param.time}).

@@ -4,5 +4,6 @@ export function formatDate(date) {
     month: 'short',
     day: 'numeric'
   };
-  return (new Date(date)).toLocaleDateString('en-US', options);
+  return date;
+  //return (new Date(date)).toLocaleDateString('en-US', options);
 }

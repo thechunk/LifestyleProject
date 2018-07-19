@@ -1,7 +1,8 @@
 import { getAuthToken } from '../storage/StorageUtils';
 
 const authBaseUrl = 'https://4e212407-3532-4a04-a471-e6f6091b5265.mock.pstmn.io';
-const bookBaseUrl = 'https://4e212407-3532-4a04-a471-e6f6091b5265.mock.pstmn.io';
+//const bookBaseUrl = 'https://4e212407-3532-4a04-a471-e6f6091b5265.mock.pstmn.io';
+const bookBaseUrl = 'http://18.221.36.217:8080';
 
 const headers = {
   // 'x-api-key': '37e332c8c96b471b9d92e2697df670d7',
@@ -9,7 +10,8 @@ const headers = {
 const paths = {
   auth: { token: '/auth/token' },
   dates: '/dates',
-  bookings: '/bookings',
+  //bookings: '/bookings',
+  bookings: '/gymBookings'
 };
 
 const authorizationHeader = () => {
@@ -56,7 +58,7 @@ const fns = {
       .then(response => response.json())
       .catch(e => e);
   },
-  postBookings: (date, time) => {
+  postBookings: (date, time, quota_full) => {
     return authorizationHeader()
       .then((authHeader) => {
         return fetch(`${bookBaseUrl}${paths.bookings}`, {
@@ -66,7 +68,7 @@ const fns = {
             'Content-Type': 'application/json',
             'Authorization': authHeader,
           }),
-          body: JSON.stringify({ date, time }),
+          body: JSON.stringify({ date, time, quota_full }),
         })
       })
       .then(response => response.json())
