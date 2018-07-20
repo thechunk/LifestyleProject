@@ -7,6 +7,7 @@ import GymBookConfirmView from './GymBookConfirmView';
 import GymBookSuccessView from './GymBookSuccessView';
 import SettingsView from './SettingsView';
 import ComingSoonView from './ComingSoonView';
+import CommonStyles from './CommonStyles';
 
 const drawerButton = ({ onPress }) => {
   return (
@@ -14,6 +15,7 @@ const drawerButton = ({ onPress }) => {
       name="md-menu"
       size={35}
       style={{marginLeft: 22}}
+      color='white'
       onPress={onPress}
     />
   )
@@ -27,18 +29,27 @@ export default DrawerNavigator(
         navigationOptions: ({ navigation }) => ({
           title: 'Gym Booking',
           headerLeft: drawerButton({ onPress: () => navigation.toggleDrawer() }),
+          headerStyle: [CommonStyles.bgBrightBlue],
+          headerTitleStyle: [CommonStyles.colorWhite],
+          headerTintColor: 'white', 
         }),
       },
       GymBookConfirmView: {
         screen: GymBookConfirmView,
         navigationOptions: ({ navigation }) => ({
           title: 'Gym Booking',
+          headerStyle: [CommonStyles.bgBrightBlue],
+          headerTitleStyle: [CommonStyles.colorWhite],
+          headerTintColor: 'white',
         }),
       },
       GymBookSuccessView: {
         screen: GymBookSuccessView,
         navigationOptions: ({ navigation }) => ({
           title: 'Gym Booking',
+          headerStyle: [CommonStyles.bgBrightBlue],
+          headerTitleStyle: [CommonStyles.colorWhite],
+          headerTintColor: 'white',
         }),
       },
     }, {

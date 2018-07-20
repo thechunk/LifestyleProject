@@ -5,28 +5,46 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableNativeFeedback,
   View
 } from 'react-native';
 import Api from './Api';
 import CommonStyles from './CommonStyles';
-import { formatDate } from './FormatHelper';
+import { formatDate, getWeekday } from './FormatHelper';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const BookButton = ({data, onPressBookButton}) => {
   let title = "Book";
-  let color = "green";
+  let color = "rgb(0, 111, 207)";
   if (data.booking_id >= 1) {//!== null) {
     title = "Review";
-    color = null;
+    color = "rgb(0, 155, 187)";
   } else if (data.quota_full === true) {
     title = "Waitlist";
-    color = "orange";
+    color = "rgb(248, 153, 34)";
   }
   return (
-    <Button
-      color={color}
-      onPress={() => onPressBookButton(data)}
-      title={title}
-    />
+    <TouchableNativeFeedback
+      onPress={() => onPressBookButton(data)}>
+      <View style={CommonStyles.touchableSubmitButton}>
+        <Text style={[CommonStyles.touchableSubmitButtonText, {fontWeight: '500', color: color}]}>{title.toUpperCase()}</Text>
+      </View>
+    </TouchableNativeFeedback>
+  );
+};
+
+const StatusCell = ({data}) => {
+  let icon = null;
+  if (data.booking_id >= 1) {
+    icon = <Icon style={{flexBasis: 22, textAlignVertical: 'center'}} name="check" size={20} color="rgb(63, 156, 53)" />;
+  }
+  return (
+    <View style={{flex: 1, flexDirection: 'row'}}>
+      {icon}
+      <Text style={[styles.tableCellText, CommonStyles.fontBody]}>
+        {typeof data.time === 'string' ? data.time.toUpperCase() : null}
+      </Text>
+    </View>
   );
 };
 
@@ -63,14 +81,19 @@ export default class GymDatesView extends Component {
 
   renderRow() {
     return this.state.data.map((d, i) => (
-      <View key={i} style={[styles.tableRowBase, styles.tableRow]}>
-        <View style={styles.tableCell}>
-          <Text>{formatDate(d.date)}</Text>
+      <View key={i} style={[styles.tableRowBase, styles.tableRow, CommonStyles.bottomSeparator]}>
+        <View style={[styles.tableCell, styles.tableCellWeekday]}>
+          <Text style={[styles.tableCellText, CommonStyles.fontBody]}>{getWeekday(d.date)}</Text>
         </View>
-        <View style={styles.tableCell}>
-          <Text>{d.time}</Text>
+        <View style={[styles.tableCell, styles.tableCellDate]}>
+          <Text style={[styles.tableCellText, CommonStyles.fontBodyEm]}>{formatDate(d.date)}</Text>
         </View>
-        <View style={styles.tableCell}>
+        <View style={[styles.tableCell, styles.tableCellTime]}>
+          <StatusCell
+            data={d}
+          />
+        </View>
+        <View style={[styles.tableCell, styles.tableCellAction, {alignItems: 'center'}]}>
           <BookButton
             data={d}
             onPressBookButton={this.onPressBookButton.bind(this)}
@@ -82,30 +105,34 @@ export default class GymDatesView extends Component {
 
   render() {
     return (
-      <ScrollView contentContainerStyle={[CommonStyles.standardContainer, styles.tableContainer]}>
-        <View style={[styles.tableRowBase, styles.tableHeader, CommonStyles.bgDeepBlue]}>
-          <View style={styles.tableCell}>
-            <Text style={CommonStyles.colorWhite}>Date</Text>
+      <View style={{flex: 1}}>
+        <View style={[styles.tableRowBase, styles.tableHeader, CommonStyles.bgWhite]}>
+          <View style={[styles.tableCell, styles.tableCellWeekday]}></View>
+          <View style={[styles.tableCell, styles.tableCellDate]}>
+            <Text style={[CommonStyles.colorBrightBlue, styles.tableCellText, CommonStyles.fontTableHeadingEm]}>Date</Text>
           </View>
-          <View style={styles.tableCell}>
-            <Text style={CommonStyles.colorWhite}>Time</Text>
+          <View style={[styles.tableCell, styles.tableCellTime]}>
+            <Text style={[CommonStyles.colorBrightBlue, styles.tableCellText, CommonStyles.fontTableHeading]}>Booked</Text>
           </View>
-          <View style={styles.tableCell}>
-            <Text style={CommonStyles.colorWhite}>Actions</Text>
+          <View style={[styles.tableCell, styles.tableCellAction]}>
+            <Text style={[CommonStyles.colorBrightBlue, styles.tableCellText, CommonStyles.fontTableHeading, {textAlign: 'center'}]}>Actions</Text>
           </View>
         </View>
-        {this.renderRow.bind(this)()}
-      </ScrollView>
+        <ScrollView contentContainerStyle={[styles.tableContainer]}>
+          {this.renderRow.bind(this)()}
+        </ScrollView>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  tableContainer: {},
+  tableContainer: {flexGrow: 1},
   tableHeader: {
     height: 56,
     alignItems: 'center',
     alignContent: 'center',
+    elevation: 4,
   },
   tableRow: {
     backgroundColor: 'white',
@@ -116,6 +143,25 @@ const styles = StyleSheet.create({
   },
   tableCell: {
     flex: 1,
-    padding: 4,
+    paddingTop: 4,
+    paddingRight: 11,
+    paddingBottom: 4,
+    paddingLeft: 11,
   },
+  tableCellWeekday: {
+    flexGrow: 0.2,
+  },
+  tableCellDate: {
+    flexGrow: 0.4,
+  },
+  tableCellTime: {
+    flexGrow: 0.3,
+  },
+  tableCellAction: {
+    flexGrow: 0.4,
+  },
+  tableCellText: {
+    flex: 1,
+    textAlignVertical: 'center',
+  }
 });

@@ -1,9 +1,12 @@
 export function formatDate(date) {
   const options = {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric'
+    year: '2-digit',
+    month: '2-digit',
+    day: '2-digit',
   };
-  return date;
-  //return (new Date(date)).toLocaleDateString('en-US', options);
+  return (new Date(date)).toLocaleDateString('en-HK', options);
+}
+export function getWeekday(date) {
+  const options = { weekday: 'short' };
+  return (new Date(date)).toLocaleDateString('en-HK', options);
 }

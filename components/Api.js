@@ -46,6 +46,11 @@ const fns = {
   dates: (username, password) => {
     return authorizationHeader()
       .then((authHeader) => {
+        // return new Promise((res) => {
+        //   res({
+        //     json: function() {}
+        //   });
+        // });
         return fetch(`${bookBaseUrl}${paths.dates}`, {
           method: 'GET',
           headers: Object.assign({}, headers, {
@@ -55,7 +60,10 @@ const fns = {
           }),
         })
       })
-      .then(response => response.json())
+      .then(response => {
+        return response.json()
+        // return JSON.parse('{"data":[{"date":"2018-07-19","booking_id":0,"quota_full":false},{"date":"2018-07-20","quota_full":true},{"date":"2018-07-21","booking_id":30,"quota_full":false,"time":"am"},{"date":"2018-07-22","booking_id":10,"quota_full":false,"time":"am"},{"date":"2018-07-19","booking_id":10,"quota_full":false,"time":"am"},{"date":"2018-07-20","quota_full":true},{"date":"2018-07-21","booking_id":30,"quota_full":false,"time":"am"},{"date":"2018-07-19","booking_id":10,"quota_full":false,"time":"am"},{"date":"2018-07-19","booking_id":10,"quota_full":false,"time":"am"},{"date":"2018-07-20","quota_full":true},{"date":"2018-07-21","booking_id":30,"quota_full":false,"time":"am"},{"date":"2018-07-19","booking_id":10,"quota_full":false,"time":"am"},{"date":"2018-07-19","booking_id":10,"quota_full":false,"time":"am"},{"date":"2018-07-20","quota_full":true},{"date":"2018-07-21","booking_id":30,"quota_full":false,"time":"am"},{"date":"2018-07-19","booking_id":10,"quota_full":false,"time":"am"},{"date":"2018-07-19","booking_id":10,"quota_full":false,"time":"am"}]}')
+      })
       .catch(e => e);
   },
   postBookings: (date, time, quota_full) => {
