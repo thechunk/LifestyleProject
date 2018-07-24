@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Alert,
-  Button,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,7 +12,7 @@ import CommonStyles from './CommonStyles';
 import { formatDate, getWeekday } from './FormatHelper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const BookButton = ({data, onPressBookButton}) => {
+const BookButton = ({data, disabled, onPressBookButton}) => {
   let title = "Book";
   let color = "rgb(0, 111, 207)";
   if (data.booking_id >= 1) {//!== null) {
@@ -25,7 +24,8 @@ const BookButton = ({data, onPressBookButton}) => {
   }
   return (
     <TouchableNativeFeedback
-      onPress={() => onPressBookButton(data)}>
+      onPress={() => onPressBookButton(data)}
+      disabled={disabled}>
       <View style={CommonStyles.touchableSubmitButton}>
         <Text style={[CommonStyles.touchableSubmitButtonText, {fontWeight: '500', color: color}]}>{title.toUpperCase()}</Text>
       </View>
@@ -36,7 +36,11 @@ const BookButton = ({data, onPressBookButton}) => {
 const StatusCell = ({data}) => {
   let icon = null;
   if (data.booking_id >= 1) {
-    icon = <Icon style={{flexBasis: 22, textAlignVertical: 'center'}} name="check" size={20} color="rgb(63, 156, 53)" />;
+    if (data.status === 'CONFIRMED') {
+      icon = <Icon style={{flexBasis: 22, textAlignVertical: 'center'}} name="check" size={20} color="rgb(63, 156, 53)" />;
+    } else {
+      icon = <Icon style={{flexBasis: 22, textAlignVertical: 'center'}} name="schedule" size={20} color="rgb(248, 153, 34)" />;
+    }
   }
   return (
     <View style={{flex: 1, flexDirection: 'row'}}>
@@ -52,18 +56,14 @@ export default class GymDatesView extends Component {
   constructor() {
     super();
     this.state = {
-      data: []
+      data: [],
+      refreshing: false,
     };
   }
 
   componentDidMount() {
     this.props.navigation.addListener('didFocus', () => {
-      Api.dates()
-        .then((r) => {
-          if (r instanceof Error) throw r;
-          this.setState(r);
-        })
-        .catch(this.error);
+      this.onRefresh();
     });
   }
 
@@ -71,6 +71,20 @@ export default class GymDatesView extends Component {
     Alert.alert('Error', message, [
       {text: 'Close'},
     ])
+  }
+
+  onRefresh() {
+    this.setState({ refreshing: true });
+
+    Api.dates()
+      .then((r) => {
+        if (r instanceof Error) throw r;
+        this.setState({
+          data: r.data,
+          refreshing: false,
+        });
+      })
+      .catch(this.error);
   }
 
   onPressBookButton(d) {
@@ -97,6 +111,7 @@ export default class GymDatesView extends Component {
           <BookButton
             data={d}
             onPressBookButton={this.onPressBookButton.bind(this)}
+            disabled={this.state.refreshing}
           />
         </View>
       </View>
@@ -118,7 +133,15 @@ export default class GymDatesView extends Component {
             <Text style={[CommonStyles.colorBrightBlue, styles.tableCellText, CommonStyles.fontTableHeading, {textAlign: 'center'}]}>Actions</Text>
           </View>
         </View>
-        <ScrollView contentContainerStyle={[styles.tableContainer]}>
+        <ScrollView contentContainerStyle={[styles.tableContainer]}
+          refreshControl={
+            <RefreshControl
+              colors={['rgb(0, 111, 207)']}
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh.bind(this)}
+            />
+          }
+        >
           {this.renderRow.bind(this)()}
         </ScrollView>
       </View>

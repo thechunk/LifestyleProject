@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Button,
   StyleSheet,
   Text,
   TouchableNativeFeedback,
@@ -9,17 +8,17 @@ import {
 import CommonStyles from './CommonStyles';
 import { formatDate } from './FormatHelper';
 
-const SuccessText = ({data, result, param, textStyle}) => {
-  if (result.quota_full === true) {
+const SuccessText = ({data, resp, textStyle}) => {
+  if (data.quota_full === true) {
     return (
       <Text style={textStyle}>
-        You are on the gym waitlist for {formatDate(data.date)} ({param.time}).
+        You are on the gym waitlist for {formatDate(resp.bookingDate)} ({resp.bookingTime}).
       </Text>
     );
   } else {
     return (
       <Text style={textStyle}>
-        Successfully booked on {formatDate(data.date)} ({param.time}).
+        Successfully booked on {formatDate(resp.bookingDate)} ({resp.bookingTime}).
       </Text>
     );
   }
@@ -29,8 +28,7 @@ export default class GymBookSuccessView extends Component {
   constructor(props) {
     super(props);
     this.data = props.navigation.getParam('data');
-    this.result = props.navigation.getParam('result');
-    this.param = props.navigation.getParam('param');
+    this.resp = props.navigation.getParam('resp');
   }
 
   onDonePress() {
@@ -38,6 +36,7 @@ export default class GymBookSuccessView extends Component {
   }
 
   onEditPress(d) {
+    this.data.booking_id = this.resp.booking_id;
     this.props.navigation.push('GymBookConfirmView', {
       data: this.data
     });
@@ -47,7 +46,7 @@ export default class GymBookSuccessView extends Component {
     return (
       <View style={styles.formContainer}>
         <View style={[styles.textContainer, CommonStyles.bgWhite, CommonStyles.bottomSeparator]}>
-          <SuccessText textStyle={[CommonStyles.fontFormInput, {color: 'black'}]} data={this.data} result={this.result} param={this.param} />
+          <SuccessText textStyle={[CommonStyles.fontFormInput, {color: 'black'}]} data={this.data} resp={this.resp} />
         </View>
         <View style={[styles.buttonContainer, CommonStyles.bgWhite, CommonStyles.bottomSeparator]}>
           <TouchableNativeFeedback

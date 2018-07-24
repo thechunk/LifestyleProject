@@ -31,7 +31,7 @@ export default DrawerNavigator(
           headerLeft: drawerButton({ onPress: () => navigation.toggleDrawer() }),
           headerStyle: [CommonStyles.bgBrightBlue],
           headerTitleStyle: [CommonStyles.colorWhite],
-          headerTintColor: 'white', 
+          headerTintColor: 'white',
         }),
       },
       GymBookConfirmView: {
@@ -67,6 +67,9 @@ export default DrawerNavigator(
         navigationOptions: ({ navigation }) => ({
           title: 'Settings',
           headerLeft: drawerButton({ onPress: () => navigation.toggleDrawer() }),
+          headerStyle: [CommonStyles.bgBrightBlue],
+          headerTitleStyle: [CommonStyles.colorWhite],
+          headerTintColor: 'white',
         }),
       },
     }, {

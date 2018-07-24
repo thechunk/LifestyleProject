@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import {
-  Alert,
-  Button,
   StyleSheet,
   Text,
   Picker,
+  ProgressBarAndroid,
   TouchableNativeFeedback,
   View
 } from 'react-native';
@@ -12,11 +11,12 @@ import Api from './Api';
 import CommonStyles from './CommonStyles';
 import { formatDate } from './FormatHelper';
 
-const ConditionalButton = ({hidden, onPress, title, textStyle}) => {
+const ConditionalButton = ({hidden, onPress, title, textStyle, disabled}) => {
   if (hidden === false) {
     return (
       <TouchableNativeFeedback
-        onPress={onPress}>
+        onPress={onPress}
+        disabled={disabled}>
         <View style={CommonStyles.touchableSubmitButton}>
           <Text style={[textStyle, CommonStyles.touchableSubmitButtonText, {fontWeight: '500'}]}>{title.toUpperCase()}</Text>
         </View>
@@ -27,37 +27,18 @@ const ConditionalButton = ({hidden, onPress, title, textStyle}) => {
   }
 };
 
-const onConfirmPress = (data, state, navigation) => {
+const onConfirmPress = (data, navigation) => {
   const date = new Date(data.date).toISOString();
-  let apiFn = Api.postBookings;
-  if (data.booking_id >= 1) { //!== null) {
-    apiFn = Api.patchBookings;
-
-    apiFn(data.date, selectedTime, data.booking_id)
-    .then((r) => {
-      //if (r instanceof Error) throw r;
-      navigation.push('GymBookSuccessView', {
-        data: data,
-        result: state,
-        param: state,
-      });
-    })
-    .catch();
-  } else {
-    apiFn(data.date, state.time, data.quota_full)
-    .then((r) => {
-      //if (r instanceof Error) throw r;
-      navigation.push('GymBookSuccessView', {
-        data: data,
-        result: state,
-        param: state,
-      });
-    })
-    .catch();
-  }
+  Api.postBookings(data.date, selectedTime, data.quota_full)
+  .then((resp) => {
+    //if (r instanceof Error) throw r;
+    navigation.push('GymBookSuccessView', { data, resp });
+  })
+  .catch();
 }
 
 let selectedTime = 'am';
+let confirmLoading = false;
 
 export default class GymBookConfirmView extends Component {
   static navigationOptions = ({navigation, screenProps}) => {
@@ -66,7 +47,11 @@ export default class GymBookConfirmView extends Component {
       headerRight: !editMode ? (
         <TouchableNativeFeedback
           onPress={() => {
-            onConfirmPress(navigation.state.params.data, navigation.state.params.state, navigation)
+            if (confirmLoading === false) {
+              confirmLoading = true;
+              navigation.state.params.instance.setState({ loading: true });
+              onConfirmPress(navigation.state.params.data, navigation);
+            }
           }}>
           <View style={styles.headerButton}>
             <Text style={[styles.headerButtonText, CommonStyles.fontTitleBarButton, CommonStyles.colorWhite]}>
@@ -84,9 +69,15 @@ export default class GymBookConfirmView extends Component {
     this.state = {
       editMode: this.data.booking_id >= 1, //!== null,
       time: this.data.time ? this.data.time : 'am',
-      quota_full: this.data.quota_full ? this.data.quota_full : false
+      quota_full: this.data.quota_full ? this.data.quota_full : false,
+      loading: false,
     };
-    this.props.navigation.setParams({state: this.state});
+    this.props.navigation.setParams({instance: this});
+  }
+
+  componentDidMount() {
+    selectedTime = 'am';
+    confirmLoading = false;
   }
 
   error({message}) {
@@ -96,6 +87,7 @@ export default class GymBookConfirmView extends Component {
   }
 
   onDeletePress() {
+    this.setState({ loading: true });
     Api.deleteBookings(this.data.booking_id)
       .then((r) => {
         //if (r instanceof Error) throw r;
@@ -111,6 +103,9 @@ export default class GymBookConfirmView extends Component {
   render() {
     return (
       <View style={[styles.formContainer]}>
+        <View style={CommonStyles.progressBar}>
+          {this.state.loading ? <ProgressBarAndroid styleAttr="Horizontal" color="rgb(0, 111, 207)" /> : null}
+        </View>
         <View style={[styles.formDateView, CommonStyles.bgWhite, CommonStyles.bottomSeparator]}>
           <Text style={CommonStyles.fontFormLabel}>
             Date
@@ -140,10 +135,12 @@ export default class GymBookConfirmView extends Component {
             hidden={!this.state.editMode}
             onPress={this.onDeletePress.bind(this)}
             textStyle={CommonStyles.colorRed}
+            disabled={this.state.loading}
             title="Delete"
           />
           <TouchableNativeFeedback
-            onPress={this.onCancelPress.bind(this)}>
+            onPress={this.onCancelPress.bind(this)}
+            disabled={this.state.loading}>
             <View style={CommonStyles.touchableSubmitButton}>
               <Text style={[CommonStyles.colorBrightBlue, CommonStyles.touchableSubmitButtonText, {fontWeight: '500'}]}>{'RETURN'}</Text>
             </View>

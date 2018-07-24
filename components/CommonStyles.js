@@ -79,5 +79,12 @@ const CommonStyles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: 'rgb(200, 201, 199)',
   },
+  progressBar: {
+    backgroundColor: 'white',
+    flex: 1,
+    flexBasis: '100%',
+    height: 4,
+    justifyContent: 'center',
+  },
 });
 export default CommonStyles;

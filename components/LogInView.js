@@ -24,10 +24,9 @@ export default class LoginView extends Component {
   onPressSubmitButton() {
     Api.auth.token(this.state.username, this.state.password)
       .then((resp) => {
-        console.log(resp);
         if (resp instanceof Error) throw resp;
-        if (resp.data.token) {
-          setAuthToken(resp.data.token);
+        if (resp.data && resp.data.user_id) {
+          setAuthToken(resp.data.user_id);
           this.props.navigation.navigate('Activities');
         } else {
           throw new Error('You have entered an invalid username or password');

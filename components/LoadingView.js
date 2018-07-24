@@ -17,7 +17,7 @@ export default class LoadingView extends Component {
       .finally(() => {
         getAuthToken()
           .then((result) => {
-            if (!!result.length) {
+            if (0 < result || !!result.length) {
               this.props.navigation.navigate('Activities');
             } else {
               throw new Error('No auth token');
