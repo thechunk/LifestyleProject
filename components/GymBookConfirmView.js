@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Alert,
   StyleSheet,
   Text,
   Picker,
@@ -32,6 +33,7 @@ const onConfirmPress = (data, navigation) => {
   Api.postBookings(data.date, selectedTime, data.quota_full)
   .then((resp) => {
     //if (r instanceof Error) throw r;
+    data.time = selectedTime;
     navigation.push('GymBookSuccessView', { data, resp });
   })
   .catch();
@@ -87,13 +89,23 @@ export default class GymBookConfirmView extends Component {
   }
 
   onDeletePress() {
-    this.setState({ loading: true });
-    Api.deleteBookings(this.data.booking_id)
-      .then((r) => {
-        //if (r instanceof Error) throw r;
-        this.props.navigation.popToTop();
-      })
-      .catch(this.error);
+    Alert.alert(
+      'Deleting your Booking',
+      'Are you sure you want to delete your booking?',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'Delete', onPress: () => {
+          this.setState({ loading: true });
+          Api.deleteBookings(this.data.booking_id)
+          .then((r) => {
+            //if (r instanceof Error) throw r;
+            this.props.navigation.popToTop();
+          })
+          .catch(this.error);
+        }},
+      ],
+      { cancelable: false }
+    );
   }
 
   onCancelPress() {

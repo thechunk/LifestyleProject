@@ -26,7 +26,7 @@ const authorizationHeader = () => {
 };
 
 const authorizationHeaderQuery = authToken => {
-  return '?' + ((new URLSearchParams({"userId": authToken})).toString());
+  return '?userId=' + authToken;
 };
 
 const error = (e) => {

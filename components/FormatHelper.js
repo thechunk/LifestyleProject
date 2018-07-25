@@ -7,6 +7,8 @@ export function formatDate(date) {
   return (new Date(date)).toLocaleDateString('en-HK', options);
 }
 export function getWeekday(date) {
-  const options = { weekday: 'short' };
-  return (new Date(date)).toLocaleDateString('en-HK', options);
+  // const options = { weekday: 'short' };
+  // return (new Date(date)).toLocaleDateString('en-US', options);
+  const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  return weekdays[(new Date(date)).getDay()];
 }

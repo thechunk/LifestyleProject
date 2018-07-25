@@ -12,13 +12,13 @@ const SuccessText = ({data, resp, textStyle}) => {
   if (data.quota_full === true) {
     return (
       <Text style={textStyle}>
-        You are on the gym waitlist for {formatDate(resp.bookingDate)} ({resp.bookingTime}).
+        You are on the gym waitlist for {formatDate(data.date)} ({data.time}).
       </Text>
     );
   } else {
     return (
       <Text style={textStyle}>
-        Successfully booked on {formatDate(resp.bookingDate)} ({resp.bookingTime}).
+        Successfully booked on {formatDate(data.date)} ({data.time}).
       </Text>
     );
   }
@@ -36,7 +36,7 @@ export default class GymBookSuccessView extends Component {
   }
 
   onEditPress(d) {
-    this.data.booking_id = this.resp.booking_id;
+    this.data.booking_id = this.resp.data.booking_id;
     this.props.navigation.push('GymBookConfirmView', {
       data: this.data
     });

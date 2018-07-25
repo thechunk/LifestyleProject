@@ -1,9 +1,11 @@
 import { StyleSheet, PixelRatio } from 'react-native';
 
-const standardFontSize = PixelRatio.get() <= 2 ? 12 : 14;
-const titleBarFontSize = PixelRatio.get() <= 2 ? 13 : 16;
+const standardFontSize = PixelRatio.get() <= 2 ? 12 : 13;
+const titleBarFontSize = PixelRatio.get() <= 2 ? 13 : 14;
 const formInputFontSize = titleBarFontSize;
-const formInputLargeFontSize = PixelRatio.get() <= 2 ? 24 : 28;
+const formInputLargeFontSize = PixelRatio.get() <= 2 ? 24 : 26;
+const standardHeaderFontSize = PixelRatio.get() <= 2 ? 18 : 18;
+const bigHeaderFontSize = PixelRatio.get() <= 2 ? 30 : 30;
 
 const CommonStyles = StyleSheet.create({
   standardContainer: {
@@ -74,6 +76,8 @@ const CommonStyles = StyleSheet.create({
   },
   touchableSubmitButtonText: {
     letterSpacing: 0.5,
+    fontFamily: 'Roboto',
+    fontSize: standardFontSize,
   },
   bottomSeparator: {
     borderBottomWidth: 0.5,
@@ -86,5 +90,18 @@ const CommonStyles = StyleSheet.create({
     height: 4,
     justifyContent: 'center',
   },
+  bigHeaderContainer: {
+
+  },
+  fontBigHeader: {
+    fontFamily: 'Roboto',
+    fontSize: bigHeaderFontSize,
+    padding: 11,
+    paddingTop: '20%',
+  },
+  fontStandardHeader: {
+    fontFamily: 'Roboto',
+    fontSize: standardHeaderFontSize,
+  }
 });
 export default CommonStyles;

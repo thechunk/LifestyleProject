@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import {
   Alert,
-  Button,
+  ProgressBarAndroid,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
-  View
+  TouchableNativeFeedback,
+  View,
 } from 'react-native';
 import { StackActions } from 'react-navigation';
 import Api from './Api';
+import CommonStyles from './CommonStyles';
 import { setAuthToken } from '../storage/StorageUtils';
 
 export default class LoginView extends Component {
@@ -18,12 +20,15 @@ export default class LoginView extends Component {
     this.state = {
       username: '',
       password: '',
+      loading: false,
     };
   }
 
   onPressSubmitButton() {
+    this.setState({ loading: true });
     Api.auth.token(this.state.username, this.state.password)
       .then((resp) => {
+        this.setState({ loading: false });
         if (resp instanceof Error) throw resp;
         if (resp.data && resp.data.user_id) {
           setAuthToken(resp.data.user_id);
@@ -43,41 +48,69 @@ export default class LoginView extends Component {
 
   render() {
     return (
-      <ScrollView>
-        <View>
-          <Text>
-            Log In
-          </Text>
+      <View style={styles.formContainer}>
+        <View style={styles.progressBar}>
+          {this.state.loading ? <ProgressBarAndroid styleAttr="Horizontal" color="white" /> : null}
+        </View>
 
-          <View>
+        <View style={[CommonStyles.bigHeaderContainer, CommonStyles.bgBrightBlue]}>
+          <Text style={[CommonStyles.colorWhite, CommonStyles.fontBigHeader]}>
+            Welcome Back!
+          </Text>
+        </View>
+
+        <View style={[CommonStyles.bgWhite, CommonStyles.bottomSeparator, {padding: 11}]}>
+          <View style={styles.formInputView}>
             <TextInput
+              style={styles.formInputField}
+              autoCapitalize="none"
+              selectionColor="rgb(0, 111, 207)"
+              underlineColorAndroid="rgb(0, 111, 207)"
               onChangeText={(username) => this.setState({username})}
               placeholder="Username"
             />
+          </View>
+          <View style={styles.formInputView}>
             <TextInput
+              style={styles.formInputField}
+              selectionColor="rgb(0, 111, 207)"
+              underlineColorAndroid="rgb(0, 111, 207)"
               onChangeText={(password) => this.setState({password})}
               placeholder="Password"
               secureTextEntry={true}
             />
           </View>
-
-          <View style={styles.buttonContainer}>
-            <Button
-              style={styles.buttonControl}
-              onPress={this.onPressSubmitButton.bind(this)}
-              title="Log In"
-            />
-          </View>
         </View>
-      </ScrollView>
+
+        <View style={[styles.buttonContainer, CommonStyles.bgWhite]}>
+          <TouchableNativeFeedback
+            onPress={this.onPressSubmitButton.bind(this)}>
+            <View style={[CommonStyles.touchableSubmitButton, CommonStyles.bgBrightBlue, {alignSelf: 'flex-end'}]}>
+              <Text style={[CommonStyles.colorWhite, CommonStyles.touchableSubmitButtonText, {textAlign: 'center', fontWeight: '500'}]}>LOG IN</Text>
+            </View>
+          </TouchableNativeFeedback>
+        </View>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  buttonContainer: {
+  progressBar: {
+    backgroundColor: 'rgb(0, 111, 207)',
+    height: 4,
+    justifyContent: 'center',
+  },
+  formContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'stretch',
+    flexDirection: 'column',
+  },
+  buttonContainer: {
+    padding: 11,
+  },
+  formInputView: {
+  },
+  formInputField: {
+    padding: 11,
   },
 });

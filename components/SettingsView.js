@@ -17,7 +17,7 @@ export default class SettingsView extends Component {
 
   render() {
     return (
-      <View style={styles.buttonContainer}>
+      <View style={[styles.buttonContainer, CommonStyles.bottomSeparator]}>
         <TouchableNativeFeedback
           onPress={this.didPressClearDataButton.bind(this)}>
           <View style={CommonStyles.touchableSubmitButton}>
@@ -33,8 +33,5 @@ const styles = StyleSheet.create({
   buttonContainer: {
     backgroundColor: 'white',
     padding: 11,
-    flex: 1,
-    flexBasis: '100%',
-    justifyContent: 'flex-start',
   },
 });
